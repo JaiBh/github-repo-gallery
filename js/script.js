@@ -8,6 +8,10 @@ const repoList = document.querySelector(".repo-list");
 const repoDisplay = document.querySelector(".repos")
 // Selecting the section where the individual repo data will appear
 const individualRepos = document.querySelector(".repo-data")
+// Selecting the back-to-repo-gallery button
+const backToGalleryButton = document.querySelector(".view-repos")
+// Selecting the input element to search for repos
+const filterInput = document.querySelector(".filter-repos")
 
 // Fetch information from your GitHub profile
 const getProfileInfo = async function() {
@@ -50,6 +54,8 @@ const displayRepoInfo = function(repoInfo) {
 		displayRepo.classList.add("repo");
 		displayRepo.innerHTML = `<h3>${repo.name}</h3>`
 		repoList.append(displayRepo);
+// Display the Input Element
+		filterInput.classList.remove("hide");
 	}
 }
 // Displaying individual repo information
@@ -89,4 +95,27 @@ const displayIndividualRepoInfo = function(repoInfo, languages) {
 	individualRepos.append(displayIndividualRepo)
 	individualRepos.classList.remove("hide");
 	repoDisplay.classList.add("hide")
+	backToGalleryButton.classList.remove("hide")
 }
+
+// Adding a Click Event to the Back Button
+backToGalleryButton.addEventListener("click", function() {
+	repoDisplay.classList.remove("hide");
+	individualRepos.classList.add("hide");
+	backToGalleryButton.classList.add("hide");
+});
+
+// Add an Input Event to the Search Box
+filterInput.addEventListener("input", function(e) {
+	const userInput = e.target.value;
+	const repos = document.querySelectorAll(".repo")
+	const lowerCaseInput = userInput.toLowerCase();
+	for(const repo of repos) {
+		const repoLowerCase = repo.innerText.toLowerCase();
+		if (repoLowerCase.includes(lowerCaseInput)) {
+			repo.classList.remove("hide");
+		} else {
+			repo.classList.add("hide")
+		}
+	}
+});
