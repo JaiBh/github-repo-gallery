@@ -2,29 +2,49 @@
 const overview = document.querySelector(".overview");
 // GitHub username
 const username = "JaiBh";
+// Selecting the unordered list to display repo list.
+const repoDisplay = document.querySelector(".repo-list")
 
-// Async function to fetch information from your GitHub profile
+// Fetch information from your GitHub profile
 const getProfileInfo = async function() {
-	const profileInfo = await fetch(`https://api.github.com/users/${username}`)
-	const info = await profileInfo.json();
-	displayProfileInfo(info);
+	const fetchProfileInfo = await fetch(`https://api.github.com/users/${username}`)
+	const profileInfo = await fetchProfileInfo.json();
+	displayProfileInfo(profileInfo);
+	getRepoInfo();
 }
 
 getProfileInfo();
 
-// Fetch & Display User Information
-const displayProfileInfo = function(info) {
-	const displayInfo = document.createElement("div");
-	displayInfo.classList.add("user-info");
-	displayInfo.innerHTML = 
+//Display User Information
+const displayProfileInfo = function(profileInfo) {
+	const displayProfile = document.createElement("div");
+	displayProfile.classList.add("user-info");
+	displayProfile.innerHTML = 
     `<figure>
-      <img alt="user avatar" src=${info.avatar_url} />
+      <img alt="user avatar" src=${profileInfo.avatar_url} />
     </figure>
     <div>
-      <p><strong>Name:</strong> ${info.name}</p>
-      <p><strong>Bio:</strong> ${info.bio}</p>
-      <p><strong>Location:</strong> ${info.location}</p>
-      <p><strong>Number of public repos:</strong> ${info.public_repos}</p>
+      <p><strong>Name:</strong> ${profileInfo.name}</p>
+      <p><strong>Bio:</strong> ${profileInfo.bio}</p>
+      <p><strong>Location:</strong> ${profileInfo.location}</p>
+      <p><strong>Number of public repos:</strong> ${profileInfo.public_repos}</p>
     </div>`
-    overview.append(displayInfo)
+    overview.append(displayProfile)
+};
+
+// Fetch Your Repos
+const getRepoInfo = async function() {
+	const fetchRepoInfo = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`)
+	const repoInfo = await fetchRepoInfo.json();
+	displayRepoInfo(repoInfo);
+}
+
+//Display Repo Information
+const displayRepoInfo = function(repoInfo) {
+	for(const repo of repoInfo) {
+		const displayRepo = document.createElement("li");
+		displayRepo.classList.add("repo");
+		displayRepo.innerHTML = `<h3>${repo.name}</h3>`
+		repoDisplay.append(displayRepo);
+	}
 }
